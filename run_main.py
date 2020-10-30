@@ -45,9 +45,13 @@ def run_output(fold, df):
     df_train = df_new[df_new['kfold'] != fold].reset_index(drop=True)
     df_valid = df_new[df_new['kfold'] == fold].reset_index(drop=True)
 
-    """Convert training and validation dataframe target to numpy values for AUC calculation"""
-    y_train = df_train['target'].values
-    y_valid = df_valid['target'].values
+    """Convert training and validation dataframe to numpy values for AUC calculation"""
+
+    features = [i for i in df.columns if i not in ['income', 'kfold']]
+    x_train = df_train[features].values
+    x_valid = df_valid[features].values
+    y_train = df_train['income'].values
+    y_valid = df_valid['income'].values
 
     """import the model required"""
     clf = model

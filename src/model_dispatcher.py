@@ -2,6 +2,6 @@
 This script defines the model used for calculation
 """
 
-from sklearn import linear_model
+import xgboost as xgb
 
-model = linear_model.LogisticRegression()
+model = xgb.XGBClassifier(n_jobs=1)

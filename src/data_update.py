@@ -23,7 +23,7 @@ def fill_na_with_none(df):
     return df
 
 
-def one_hot_encoding(df_train, df_valid):
+def label_encoding(df):
     """
     Convert the dataframe features into one hot encoding matrix
 
@@ -33,16 +33,14 @@ def one_hot_encoding(df_train, df_valid):
 
     Returns:
     """
-    ohe = preprocessing.OneHotEncoder()
-    features = [i for i in df_train.columns if i not in ['id', 'target', 'kfold']]
-    full_data = pd.concat([df_train[features], df_valid[features]], axis=0)
-    ohe.fit(full_data[features])
-
+    features = [i for i in df.columns if i not in ['income', 'kfold']]
+    for col in features:
+        lbl = preprocessing.LabelEncoder()
+        lbl.fit(df[col])
+        df[col] = lbl.transform(df[col])
     """ use transform when we have already fit it,use fit_transform which 
         is a combination of fit and transform together in 1 api, in some 
         situations you only want to use training data to learn model 
         parameters and apply the same in test data set also. """
-    x_train = ohe.transform(df_train[features])
-    x_valid = ohe.transform(df_valid[features])
 
-    return x_train, x_valid
+    return df

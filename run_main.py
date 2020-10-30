@@ -12,7 +12,7 @@ import src.config as sc
 from sklearn import metrics
 from src.create_folds import create_folds_using_kfold
 from src.model_dispatcher import model
-from src.data_update import fill_na_with_none, one_hot_encoding
+from src.data_update import fill_na_with_none, label_encoding
 
 
 def run_output(fold, df):
@@ -35,11 +35,15 @@ def run_output(fold, df):
     df['income'] = df['income'].apply(lambda x: target_mapping[x])
 
     df_new = fill_na_with_none(df)
+
+    """ Apply label encoding to feature matrix,
+        it means that we will convert categories 
+        in each feature columns to some number
+    """
+    df_new = label_encoding(df_new)
+
     df_train = df_new[df_new['kfold'] != fold].reset_index(drop=True)
     df_valid = df_new[df_new['kfold'] == fold].reset_index(drop=True)
-
-    """Apply one hot encoding to feature matrix"""
-    x_train, x_valid = one_hot_encoding(df_train, df_valid)
 
     """Convert training and validation dataframe target to numpy values for AUC calculation"""
     y_train = df_train['target'].values

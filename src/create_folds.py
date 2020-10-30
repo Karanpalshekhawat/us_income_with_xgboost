@@ -14,7 +14,7 @@ def create_folds_using_kfold():
     df['Kfold'] = -1
     """Sampling the dataframe"""
     df = df.sample(frac=1).reset_index(drop=True)
-    y = df['target'].values
+    y = df['income'].values
     """As the target distribution is skewed, better to use stratified fold 
     as it will maintain the ratio of positive to negative exaples"""
     kf = model_selection.StratifiedKFold(n_splits=5)

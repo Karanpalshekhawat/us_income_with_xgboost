@@ -27,6 +27,13 @@ def run_output(fold, df):
     Returns:
 
     """
+    numerical_columns = ['fnlwgt', 'age', 'capital.gain', 'capital.loss', 'hours.per.week']
+    df = df.drop(numerical_columns, axis=1)
+
+    """Map income target to numerical 0s and 1s"""
+    target_mapping = {'<=50K': 0, '>50K': 1}
+    df['income'] = df['income'].apply(lambda x: target_mapping[x])
+
     df_new = fill_na_with_none(df)
     df_train = df_new[df_new['kfold'] != fold].reset_index(drop=True)
     df_valid = df_new[df_new['kfold'] == fold].reset_index(drop=True)
@@ -45,7 +52,7 @@ def run_output(fold, df):
     clf.fit(x_train, y_train)
 
     """As target variable is skewed we will need predicted probabilities to calculate AUC score"""
-    y_pred = clf.predict_proba(x_valid)[:,1]
+    y_pred = clf.predict_proba(x_valid)[:, 1]
 
     """find accuracy as distribution of all target variables in similar"""
     auc = metrics.roc_auc_score(y_valid, y_pred)
@@ -61,14 +68,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--fold', type=int)
     args = parser.parse_args()
-    """We have used LR as a model but we can also use Random forest tree.
-        For that we can use label encoding instead of one hot encoding
-        and You will observe that RF without tuning of hyper parameters 
-        performs a lot worse the simple LR. So it is better to always 
-        start with the simple model. Other parameters that might influence 
-        model decision is time taken in computation. RF takes much longer time.
-        Even on sparse one hot encoded data, RF will take more time.
-        Also better choice is to use label encoding for tree based algorithms even 
-        XG boost or other similar gradient boosting algorithms
-        """
+    """ We are using label encoding and xgboost algo, 
+        note that we can also us LR with one hot encoding, it
+        may give more accurate results.
+    """
     run_output(args.fold, df)

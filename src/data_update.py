@@ -16,7 +16,7 @@ def fill_na_with_none(df):
 
     Returns:
     """
-    features = [i for i in df.columns if i not in ['id', 'target', 'kfold']]
+    features = [i for i in df.columns if i not in ['income', 'kfold']]
     for feat in features:
         df.loc[:, feat] = df[feat].astype(str).fillna("NONE")
 

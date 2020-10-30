@@ -78,6 +78,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     """ We are using label encoding and xgboost algo, 
         note that we can also us LR with one hot encoding, it
-        may give more accurate results.
+        may give more accurate results. We can improve the model
+        by including numerical features also in the model. Any tree
+        based algo can easily handle both categorical and numerical 
+        feature mix.
     """
     run_output(args.fold, df)
